@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'lil-gui'
+import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper.js'
 
 THREE.ColorManagement.enabled = false
 
@@ -21,19 +22,60 @@ const scene = new THREE.Scene()
  */
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5)
 scene.add(ambientLight)
+gui.add(ambientLight, 'intensity').min(0).max(1).step(0.001)
 
-const pointLight = new THREE.PointLight(0xffffff, 0.5)
-pointLight.position.x = 2
-pointLight.position.y = 3
-pointLight.position.z = 4
+const pointLight = new THREE.PointLight(0xffffff, 0.5, 10)
+pointLight.position.set(2, 3, 4)
 scene.add(pointLight)
+gui.add(pointLight, 'intensity').min(0).max(1).step(0.001)
+
+const directionalLight = new THREE.DirectionalLight(0x00fffc, 0.3)
+directionalLight.position.set(1, 0.25, 0)
+scene.add(directionalLight)
+gui.add(directionalLight, 'intensity').min(0).max(1).step(0.001)
+
+const hemisphereLight = new THREE.HemisphereLight(0xff0000, 0x0000ff, 0.3)
+scene.add(hemisphereLight)
+gui.add(hemisphereLight, 'intensity').min(0).max(1).step(0.001)
+
+const rectAreaLight = new THREE.RectAreaLight(0x4e00ff, 2, 1, 1)
+rectAreaLight.position.set(0, 0, 1)
+scene.add(rectAreaLight)
+gui.add(rectAreaLight, 'intensity').min(0).max(1).step(0.001)
+
+const spotLight = new THREE.SpotLight(0x00ff00, 3, 10, Math.PI * 0.1, 0.25, 1)
+spotLight.position.set(0, 2, 3)
+scene.add(spotLight)
+spotLight.target.position.set(-1.75, 0 ,0)
+scene.add(spotLight.target)
+
+// Helpers
+const hemisphereHelper = new THREE.HemisphereLightHelper(hemisphereLight, 0.2)
+scene.add(hemisphereHelper)
+
+const directionalHelper = new THREE.DirectionalLightHelper(directionalLight, 0.2)
+scene.add(directionalHelper)
+
+const pointHelper = new THREE.PointLightHelper(pointLight, 0.2)
+scene.add(pointHelper)
+
+const spotHelper = new THREE.SpotLightHelper(spotLight)
+scene.add(spotHelper)
+
+const rectHelper = new RectAreaLightHelper(rectAreaLight)
+scene.add(rectHelper)
+
 
 /**
  * Objects
  */
 // Material
-const material = new THREE.MeshStandardMaterial()
+const material = new THREE.MeshStandardMaterial({
+    wireframe: false
+})
 material.roughness = 0.4
+gui.add(material, 'wireframe')
+gui.add(material, 'roughness').min(0).max(1).step(0.001)
 
 // Objects
 const sphere = new THREE.Mesh(
