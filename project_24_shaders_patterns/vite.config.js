@@ -17,7 +17,7 @@ export default {
         emptyOutDir: true,
         sourcemap: true
     },
-    plugins: 
+    plugins:
     [
         glsl()
     ]
